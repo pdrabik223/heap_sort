@@ -240,7 +240,12 @@ void tree<T>::show_slice(size_t slice_position) {
 
 template<class T>
 void tree<T>::show_left_to_right() {
+    if(!root) return;
+    for(int i=0;i<root->size_depth();i++){
+        root->show_slice(i);
 
+
+    }
 
 
 }

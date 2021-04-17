@@ -37,6 +37,7 @@ public:
     node_ptr in_order(unsigned &); // zwraca n-ty element w kolejnoœci "In order"
     // inaczej zwraca nullptr
     size_t size(); // zwraca ilosc wezlow w drzewie
+    size_t size_depth(size_t partial_depth = 0);
 
     void append(const T &value);// dodaje node o danym value
 
@@ -57,7 +58,6 @@ public:
             right->show_slice(from_top - 1, index + 1, array);
         else
             for (int i = 0; i < pow(2, from_top); i++) array[index + i] = nullptr;
-
 
     }
 
@@ -226,6 +226,21 @@ inline size_t node<T>::size() {
 }
 
 template<class T>
+size_t node<T>::size_depth( size_t partial_depth = 0) {
+    if(left) {
+
+        if(left->size_depth(partial_depth + 1) > partial_depth) return left->size_depth(partial_depth + 1);
+        else return partial_depth;
+    }
+    if(right){
+        if(right->size_depth(partial_depth+1) > partial_depth) return right->size_depth(partial_depth +1 );
+        else return  partial_depth;
+    }
+    return partial_depth;
+
+}
+
+template<class T>
 inline void node<T>::append(const T &value) {
 
 
@@ -263,6 +278,8 @@ inline node<T>::~node() {
     if (!right)delete right;
 // if (!father)delete father // almost made dodo
 }
+
+
 
 
 #endif // !NODE_H
