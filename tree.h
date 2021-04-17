@@ -1,7 +1,4 @@
-
-//
-//
-// Autor: Piotr Drabik				Data: 25.12.2020
+//Autor: Piotr Drabik				Data: 25.12.2020
 #pragma once
 #ifndef TREE_H
 #define TREE_H
@@ -10,7 +7,7 @@
 #include <exception>
 
 
-struct out_of_range :public std::exception { // wyjatek out of range
+struct out_of_range :public std::exception {
     const char* what() const throw() {
         return "out of range";
     }
@@ -20,8 +17,8 @@ struct out_of_range :public std::exception { // wyjatek out of range
 // --- iterator over the tree ---
 
 template<typename tree>
-class iterator  // iterator dla drzewa dziala na podstawie przeszukiwania drzewa in order
-    // iterator bazuje na funkcji next nalezacej do klasy node
+class iterator
+
     {
 public:
     using ValueType = typename tree::ValueType;
@@ -40,13 +37,13 @@ public:
 
         return *this;
     }
-    iterator<tree>& operator++() { // preinkrementacja
+    iterator<tree>& operator++() {
         current_ptr = current_ptr->next(current_ptr->get_value());
 
         return *this;
     };
 
-    iterator<tree> operator++(int) { // postinkrementacja
+    iterator<tree> operator++(int) {
         iterator<tree> tmp(*this);
         operator++();
         return tmp;
@@ -55,7 +52,7 @@ public:
 
     bool operator==(const iterator<tree>& rhs) const { return current_ptr == rhs.current_ptr; };
     bool operator!=(const iterator<tree>& rhs) const { return current_ptr != rhs.current_ptr; };
-    ValueType& operator*() { return *current_ptr; }; // dereferencja
+    ValueType& operator*() { return *current_ptr; }; // dereference
 };
 
 
@@ -76,10 +73,18 @@ public:
 
     size_t size();
     void append(const T& value); // dodaje nowa wartosc do drzewa
+    void append_and_sort(const T& value);
 
-    void clear(); // usuwa drzewo
+
+    void clear(); // delete tree
     void append_or_replace(const T& value); // dodaje albo zamienia node o podanym value
-    T& in_order(const unsigned& counter)  ;
+    void append_or_replace_definitely_sort(const T& value);
+
+    void show_slice(size_t slice_position);
+
+
+    void show_left_to_right();
+    T& in_order(const unsigned& counter);
     T& operator[](const T&);
 
     T& search(const T& value);
@@ -155,6 +160,18 @@ inline void tree<T>::append(const T& value)
 }
 
 template<class T>
+void tree<T>::append_and_sort(const T &value) {
+
+
+    if (root){
+        if(value < root->get_value()) root->append(value);
+        else std::swap(value, root->get_value());
+    }
+    else root = new node<T>(value);
+
+}
+
+template<class T>
 inline void tree<T>::clear()
 {
     if(root) delete root;
@@ -166,6 +183,17 @@ template<class T>
 inline void tree<T>::append_or_replace(const T& value)
 {
     if (root) root->append_or_replace(value);
+
+    else root = new node<T>(value);
+}
+
+template<class T>
+void tree<T>::append_or_replace_definitely_sort(const T &value) {
+
+    if (root){
+        if(value < root->get_value()) root->append_or_replace(value);
+        else std::swap(value, root->get_value());
+    }
     else root = new node<T>(value);
 }
 
@@ -196,4 +224,24 @@ inline T& tree<T>::search(const T& value)
         else throw out_of_range();
     }
     else throw out_of_range();
-};
+}
+
+template<class T>
+void tree<T>::show_slice(size_t slice_position) {
+
+    auto **array = new node<T>[pow(2,slice_position)];
+    if(root)
+      root->show_slice(slice_position, 0, array);
+
+    for(int i=0;i<pow(2,slice_position);i++)
+       if(array[i] != nullptr) std::cout<<array[i]->get_value()<<" ";
+
+}
+
+template<class T>
+void tree<T>::show_left_to_right() {
+
+
+
+}
+

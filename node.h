@@ -8,36 +8,60 @@
 template<class T>
 class node {
 public:
-    using node_ptr = node<T>*;
-    using node_ref = node<T>&;
+    using node_ptr = node<T> *;
+    using node_ref = node<T> &;
 
-     enum Color {
+    enum Color {
         red = 0,
         black = 1
     };
 
 
     node();
+
     node(T);
 
     node(node_ptr, Color, T);
-    node<T>& operator=(const node<T>&);
-    node(const node<T>&);
-    node_ptr search(const T&); // wyszukuje i zwraca adres elementu szukanego
-    // inaczej zwraca null ptr
-    node_ptr acces_or_asign(const T&);// nadpisuje obiekt o wartosci rownej szukanej
-    // inaczej tworzy nowy node o wartosci szukanej
+
+    node<T> &operator=(const node<T> &);
+
+    node(const node<T> &);
+
+    node_ptr search(const T &);
+
+    node_ptr acces_or_asign(const T &);
+
 
     node_ptr end(); // zwraca adres ostatniego elementu w kolejnosci przeszukiwania "In order"
-    node_ptr next(const T& previous_value);// zwraca adres kolejnego elementu wzgledem przeszukiwania "In order"
-    node_ptr in_order(unsigned&); // zwraca n-ty element w kolejnoœci "In order"
+    node_ptr next(const T &previous_value);// zwraca adres kolejnego elementu wzgledem przeszukiwania "In order"
+    node_ptr in_order(unsigned &); // zwraca n-ty element w kolejnoœci "In order"
     // inaczej zwraca nullptr
     size_t size(); // zwraca ilosc wezlow w drzewie
 
-    void append(const T& value);// dodaje node o danym value
-    void append_or_replace(const T& value); // dodaje albo zamienia w miejscu value
+    void append(const T &value);// dodaje node o danym value
 
-    T& get_value(); // zwraca wartosc noda jako referencje
+    void append_or_replace(const T &value); // dodaje albo zamienia w miejscu value
+
+    T *show_slice(size_t from_top, size_t index, T **array) {
+
+        if (from_top == 0) {
+            array[index] = this;
+            return;
+        }
+        if (left)
+            left->show_slice(from_top - 1, index, array);
+        else
+            for (int i = 0; i < pow(2, from_top); i++) array[index + i] = nullptr;
+
+        if (right)
+            right->show_slice(from_top - 1, index + 1, array);
+        else
+            for (int i = 0; i < pow(2, from_top); i++) array[index + i] = nullptr;
+
+
+    }
+
+    T &get_value(); // zwraca wartosc noda jako referencje
     ~node();
 
 protected:
@@ -57,13 +81,11 @@ inline node<T>::node()
          left(nullptr),
          right(nullptr),
          color(node<T>::black),
-         value(NULL)
-{}
+         value(NULL) {}
 
 
 template<class T>
-inline node<T>::node(T value)
-{
+inline node<T>::node(T value) {
     father = nullptr;
     left = nullptr;
     right = nullptr;
@@ -73,10 +95,8 @@ inline node<T>::node(T value)
 }
 
 
-
 template<class T>
-inline node<T>::node(node<T>* father, Color color, T value)
-{
+inline node<T>::node(node<T> *father, Color color, T value) {
     this->father = father;
     left = nullptr;
     right = nullptr;
@@ -86,8 +106,7 @@ inline node<T>::node(node<T>* father, Color color, T value)
 }
 
 template<class T>
-inline node<T>& node<T>::operator=(const node<T>& other)
-{
+inline node<T> &node<T>::operator=(const node<T> &other) {
 
     if (this == &other) return *this;
     father = nullptr;
@@ -102,8 +121,7 @@ inline node<T>& node<T>::operator=(const node<T>& other)
 
 
 template<class T>
-inline node<T>::node(const node<T>& other)
-{
+inline node<T>::node(const node<T> &other) {
     father = nullptr;
 
     color = other.color;
@@ -112,22 +130,19 @@ inline node<T>::node(const node<T>& other)
     if (other.left) {
         left = new node<T>(*other.left);
         left->father = this;
-    }
-    else left = nullptr;
+    } else left = nullptr;
     if (other.right) {
-        right = new  node<T>(*other.right);
+        right = new node<T>(*other.right);
         right->father = this;
-    }
-    else right = nullptr;
+    } else right = nullptr;
 
 }
 
 template<class T>
-inline node<T>* node<T>::search(const T& value)
-{
+inline node<T> *node<T>::search(const T &value) {
     if (this->value == value) return this;
 
-    node<T>* ptr_to_return = nullptr;
+    node<T> *ptr_to_return = nullptr;
 
     if (value < this->value && left) ptr_to_return = left->search(value);
 
@@ -137,8 +152,7 @@ inline node<T>* node<T>::search(const T& value)
 }
 
 template<class T>
-inline node<T>* node<T>::acces_or_asign(const T& value)
-{
+inline node<T> *node<T>::acces_or_asign(const T &value) {
     if (value == this->value) return this;
 
     if (value < this->value) {
@@ -160,8 +174,7 @@ inline node<T>* node<T>::acces_or_asign(const T& value)
 }
 
 template<class T>
-inline node<T>* node<T>::end()
-{
+inline node<T> *node<T>::end() {
 
     if (right) return right->end();
     if (left) return left->end();
@@ -171,8 +184,7 @@ inline node<T>* node<T>::end()
 }
 
 template<class T>
-inline node<T>* node<T>::next(const T& previous_value)
-{
+inline node<T> *node<T>::next(const T &previous_value) {
 
     if (previous_value == this->value && left) return left;
     if (previous_value == this->value && right) return right;
@@ -189,12 +201,11 @@ inline node<T>* node<T>::next(const T& previous_value)
 }
 
 template<class T>
-inline node<T>* node<T>::in_order(unsigned& counter)
-{
+inline node<T> *node<T>::in_order(unsigned &counter) {
 
     if (counter == 0) return this;
     counter--;
-    node<T>* ptr_to_return = nullptr;
+    node<T> *ptr_to_return = nullptr;
 
     if (left) ptr_to_return = left->in_order(counter);
     if (ptr_to_return) return ptr_to_return;
@@ -206,8 +217,7 @@ inline node<T>* node<T>::in_order(unsigned& counter)
 }
 
 template<class T>
-inline size_t node<T>::size()
-{
+inline size_t node<T>::size() {
     size_t partial_sum = 1;
     if (left)partial_sum += left->size();
     if (right)partial_sum += right->size();
@@ -216,8 +226,7 @@ inline size_t node<T>::size()
 }
 
 template<class T>
-inline void node<T>::append(const T& value)
-{
+inline void node<T>::append(const T &value) {
 
 
     if (value < this->value && left) left->append(value);
@@ -230,31 +239,26 @@ inline void node<T>::append(const T& value)
 }
 
 template<class T>
-inline void node<T>::append_or_replace(const T& value)
-{
+inline void node<T>::append_or_replace(const T &value) {
 
     if (value < this->value) {
         if (left) left->append_or_replace(value);
         else left = new node<T>(this, node<T>::black, value);
 
-    }
-    else if (value > this->value) {
+    } else if (value > this->value) {
         if (right) right->append_or_replace(value);
-        else  right = new node<T>(this, node<T>::black, value);
-    }
-    else this->value = value;
+        else right = new node<T>(this, node<T>::black, value);
+    } else this->value = value;
 
 }
 
 template<class T>
-inline T& node<T>::get_value()
-{
+inline T &node<T>::get_value() {
     return value;
 }
 
 template<class T>
-inline node<T>::~node()
-{
+inline node<T>::~node() {
     if (!left)delete left;
     if (!right)delete right;
 // if (!father)delete father // almost made dodo
