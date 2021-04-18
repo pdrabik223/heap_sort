@@ -43,21 +43,20 @@ public:
 
     void append_or_replace(const T &value); // dodaje albo zamienia w miejscu value
 
-    void show_slice(size_t from_top, size_t index, node<T> **array) {
+    void show_slice(size_t current_depth, size_t index, node<T> **array) {
 
-        if (from_top == 0) {
+        if (current_depth == 0) {
             array[index] = this;
             return;
         }
         if (left)
-            left->show_slice(from_top - 1, index, array);
-        else
-            for (int i = 0; i < pow(2, from_top); i++) array[index + i] = nullptr;
+            left->show_slice(current_depth - 1, index, array);
 
         if (right)
-            right->show_slice(from_top - 1, index + 1, array);
-        else
-            for (int i = 0; i < pow(2, from_top); i++) array[index + i] = nullptr;
+            right->show_slice(current_depth - 1, index + pow(2, current_depth) / 2, array);
+
+
+
 
     }
 
