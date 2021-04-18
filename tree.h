@@ -72,6 +72,7 @@ public:
     ~tree<T>();
 
     size_t size();
+    size_t size_depth();
     void append(const T& value); // dodaje nowa wartosc do drzewa
     void append_and_sort(const T& value);
 
@@ -96,9 +97,9 @@ public:
     iterator<tree<T>> end() {
         return iterator<tree<T>>(nullptr);
     };
-
+node<T>* give_root() { return root; };
 protected:
-    node<T>* give_root() { return root; };
+
 
     node<T>* root;
 
@@ -151,6 +152,13 @@ inline size_t tree<T>::size()
     if (root) return root->size();
     else return 0;
 }
+
+template<class T>
+size_t tree<T>::size_depth() {
+if(root) return root->size_depth();
+else return 0;
+}
+
 
 template<class T>
 inline void tree<T>::append(const T& value)
@@ -229,7 +237,7 @@ inline T& tree<T>::search(const T& value)
 template<class T>
 void tree<T>::show_slice(size_t slice_position) {
 
-    auto **array = new node<T>[pow(2,slice_position)];
+    auto **array = new node<T>*[pow(2,slice_position)];
     if(root)
       root->show_slice(slice_position, 0, array);
 
@@ -242,9 +250,8 @@ template<class T>
 void tree<T>::show_left_to_right() {
     if(!root) return;
     for(int i=0;i<root->size_depth();i++){
-        root->show_slice(i);
-
-
+        show_slice(i);
+        printf("\n");
     }
 
 

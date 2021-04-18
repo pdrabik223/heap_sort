@@ -43,7 +43,7 @@ public:
 
     void append_or_replace(const T &value); // dodaje albo zamienia w miejscu value
 
-    T *show_slice(size_t from_top, size_t index, T **array) {
+    void show_slice(size_t from_top, size_t index, node<T> **array) {
 
         if (from_top == 0) {
             array[index] = this;
@@ -226,16 +226,28 @@ inline size_t node<T>::size() {
 }
 
 template<class T>
-size_t node<T>::size_depth( size_t partial_depth = 0) {
-    if(left) {
+size_t node<T>::size_depth(size_t partial_depth = 1) {
+    size_t left_depth = 0;
+    size_t right_depth = 0;
+    if (left)
+        left_depth = left->size_depth(partial_depth + 1);
 
-        if(left->size_depth(partial_depth + 1) > partial_depth) return left->size_depth(partial_depth + 1);
+
+    if (right)
+        right_depth = right->size_depth(partial_depth + 1);
+
+
+    if (left_depth >= right_depth) {
+        if (left_depth >= partial_depth)
+            return left_depth;
         else return partial_depth;
     }
-    if(right){
-        if(right->size_depth(partial_depth+1) > partial_depth) return right->size_depth(partial_depth +1 );
-        else return  partial_depth;
+
+    if (right_depth >= left_depth) {
+        if (right_depth >= partial_depth) return right_depth;
+        else return partial_depth;
     }
+
     return partial_depth;
 
 }
@@ -278,8 +290,6 @@ inline node<T>::~node() {
     if (!right)delete right;
 // if (!father)delete father // almost made dodo
 }
-
-
 
 
 #endif // !NODE_H
