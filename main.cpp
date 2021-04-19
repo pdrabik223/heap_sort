@@ -7,12 +7,13 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
+#include <thread>
 
 
 enum orientation {
 
-    from_up,
-    from_down
+    descending ,
+    ascending
     // todo make sort orientational
 
 };
@@ -64,32 +65,14 @@ int main() {
     srand(time(NULL));
 
     std::vector<int> to_be_sorted;
-    for (int i = 0; i < 10; i++) to_be_sorted.push_back(rand() % 100);
+    for (int i = 0; i < 7; i++) to_be_sorted.push_back(rand() % 100);
 
     for (auto i:to_be_sorted) std::cout << i << "\t";
     std::cout << std::endl;
     heap_sort(to_be_sorted);
     for (auto i:to_be_sorted) std::cout << i << "\t";
     std::cout << std::endl;
-    return 0;
-}
 
-
-size_t left(size_t index) {
-    return 2 * index + 1;
-}
-
-size_t right(size_t index) {
-    return 2 * index + 2;
-}
-
-template<class T>
-void show_heap(std::vector<T> &array, size_t array_size) {
-    if (array_size < 2) return; // condition defined in asd2_problem2.pdf
-    for (int i = 0; i < array_size; ++i) {
-        std::cout << array[i] << "\t";
-    }
-    std::cout << "\n";
 }
 
 template<class T>
@@ -122,12 +105,12 @@ void create_heap(std::vector<T> &array, size_t index, size_t array_size) {
     size_t left_index = left(index);
     size_t right_index = right(index);
 
-    if (left_index < array_size) {
+    if (left_index < array_size)
         create_heap(array, left_index, array_size);
-    }
-    if (right_index < array_size) {
+
+    if (right_index < array_size)
         create_heap(array, right_index, array_size);
-    }
+
     swap_with_children(array, index, array_size);
 
 }
