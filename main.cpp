@@ -7,12 +7,9 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
-#include <thread>
-
 
 enum orientation {
-
-    descending ,
+    descending,
     ascending
     // todo make sort orientational
 
@@ -75,6 +72,14 @@ int main() {
 
 }
 
+size_t left(const size_t index){
+    return 2*index+1;
+
+}
+size_t right(const size_t index){
+    return 2*index+2;
+}
+
 template<class T>
 void heap_sort(std::vector<T> &array) {
     for (int i = array.size(); i >= 1; --i) {
@@ -86,9 +91,10 @@ void heap_sort(std::vector<T> &array) {
 }
 
 template<class T>
-void swap_with_children(std::vector<T> &array, size_t index, size_t array_size) {
+void swap_with_children(std::vector<T> &array, const size_t index, const size_t array_size) {
     size_t left_index = left(index);
     size_t right_index = right(index);
+
 
     if (left_index < array_size)
         if (array[left_index] > array[index])
@@ -101,9 +107,10 @@ void swap_with_children(std::vector<T> &array, size_t index, size_t array_size) 
 }
 
 template<class T>
-void create_heap(std::vector<T> &array, size_t index, size_t array_size) {
+void create_heap(std::vector<T> &array, const size_t index, const size_t array_size) {
     size_t left_index = left(index);
     size_t right_index = right(index);
+
 
     if (left_index < array_size)
         create_heap(array, left_index, array_size);
@@ -112,5 +119,17 @@ void create_heap(std::vector<T> &array, size_t index, size_t array_size) {
         create_heap(array, right_index, array_size);
 
     swap_with_children(array, index, array_size);
+
+}
+
+template<class T>
+void show_heap(std::vector<T> &array, size_t array_size){
+    if(array_size<2)return;
+    for(int i=0;i<array_size;i++){
+
+        std::cout<<array[i]<<"\t";
+    }
+    std::cout<<std::endl;
+
 
 }
