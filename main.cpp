@@ -7,7 +7,7 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
-
+using T = int;
 enum orientation {
     descending,
     ascending
@@ -97,13 +97,16 @@ void swap_with_children(std::vector<T> &array, const size_t index, const size_t 
 
 
     if (left_index < array_size)
-        if (array[left_index] > array[index])
+        if (array[left_index] > array[index]) {
             std::swap(array[left_index], array[index]);
+            swap_with_children(array,left_index,array_size);
+        }
 
     if (right_index < array_size)
-        if (array[right_index] > array[index])
+        if (array[right_index] > array[index]) {
             std::swap(array[right_index], array[index]);
-
+            swap_with_children(array,right_index,array_size);
+        }
 }
 
 template<class T>
