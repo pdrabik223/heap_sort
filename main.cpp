@@ -7,13 +7,7 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
-using T = int;
-enum orientation {
-    descending,
-    ascending
-    // todo make sort orientational
 
-};
 
 /// sort's array using heap algorithm
 /// \return sort's given array
@@ -58,26 +52,43 @@ template<class T>
 void show_heap(std::vector<T> &array, size_t array_size);
 
 
+/// main
 int main() {
     srand(time(NULL));
 
+    unsigned N;
+    std::cin >> N;
+
+
     std::vector<int> to_be_sorted;
-    for (int i = 0; i < 7; i++) to_be_sorted.push_back(rand() % 100);
+    for (int i = 0; i < N; i++) {
+        int k;
+        int sort;
+        std::cin >> k ;
+        for (int j = 0; j < k; j++) {
+            std::cin >>sort;
+            to_be_sorted.push_back(sort);
 
-    for (auto i:to_be_sorted) std::cout << i << "\t";
-    std::cout << std::endl;
-    heap_sort(to_be_sorted);
-    for (auto i:to_be_sorted) std::cout << i << "\t";
-    std::cout << std::endl;
+
+        }
+        heap_sort(to_be_sorted);
+        for (auto s:to_be_sorted) std::cout << s << "\t";
+        std::cout << std::endl;
+        std::cout << std::endl;
+        to_be_sorted.clear();
+    }
+
 
 }
 
-size_t left(const size_t index){
-    return 2*index+1;
+
+size_t left(const size_t index) {
+    return 2 * index + 1;
 
 }
-size_t right(const size_t index){
-    return 2*index+2;
+
+size_t right(const size_t index) {
+    return 2 * index + 2;
 }
 
 template<class T>
@@ -99,13 +110,13 @@ void swap_with_children(std::vector<T> &array, const size_t index, const size_t 
     if (left_index < array_size)
         if (array[left_index] > array[index]) {
             std::swap(array[left_index], array[index]);
-            swap_with_children(array,left_index,array_size);
+            swap_with_children(array, left_index, array_size);
         }
 
     if (right_index < array_size)
         if (array[right_index] > array[index]) {
             std::swap(array[right_index], array[index]);
-            swap_with_children(array,right_index,array_size);
+            swap_with_children(array, right_index, array_size);
         }
 }
 
@@ -126,13 +137,13 @@ void create_heap(std::vector<T> &array, const size_t index, const size_t array_s
 }
 
 template<class T>
-void show_heap(std::vector<T> &array, size_t array_size){
-    if(array_size<2)return;
-    for(int i=0;i<array_size;i++){
+void show_heap(std::vector<T> &array, size_t array_size) {
+    if (array_size < 2)return;
+    for (int i = 0; i < array_size; i++) {
 
-        std::cout<<array[i]<<"\t";
+        std::cout << array[i] << "\t";
     }
-    std::cout<<std::endl;
+    std::cout << std::endl;
 
 
 }
